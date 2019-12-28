@@ -1,0 +1,25 @@
+name: Install bt
+
+on: 
+  release:
+    types: [published]
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Install bt
+      run: wget -O install.sh http://download.bt.cn/install/install_6.0.sh && sh install.sh
+    
+    - name: Mtr information
+      run: |
+        apt install mtr
+        mtr www.google.com
