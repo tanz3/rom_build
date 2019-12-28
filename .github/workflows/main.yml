@@ -16,8 +16,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
+    - name: Get ip information
+      run: curl myip.ipip.net
+   
     - name: Install bt
-      run: wget -O install.sh http://download.bt.cn/install/install_6.0.sh && sh install.sh
+      run: |
+       sudo wget -O install.sh http://download.bt.cn/install/install_6.0.sh
+       sudo bash install.sh
     
     - name: Mtr information
       run: |
