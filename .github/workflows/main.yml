@@ -17,14 +17,18 @@ jobs:
       uses: actions/checkout@master
 
     - name: Get ip information
-      run: curl myip.ipip.net
+      run: sudo curl myip.ipip.net
    
-    - name: Install bt
-      run: |
-       sudo wget -O install.sh http://download.bt.cn/install/install_6.0.sh
-       sudo bash install.sh
+    - name: Check Disk 
+      run: sudo df -lh
+ 
+    - name: Get Cpus information
+      run: sudo cat /proc/cpuinfo
     
+    - name: Check Internet Status
+      run: sudo ip addr
+      
     - name: Mtr information
       run: |
-        apt install mtr
-        mtr www.google.com
+        sudo apt install mtr
+        sudo mtr www.google.com
