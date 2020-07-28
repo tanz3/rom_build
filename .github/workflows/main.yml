@@ -1,8 +1,8 @@
-name: Install bt
+name: Build ROM
 
 on: 
-  release:
-    types: [published]
+  watch:
+    types: [started]
   push:
     branches: 
       - master
@@ -14,21 +14,24 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
-    - name: Get ip information
-      run: sudo curl myip.ipip.net
-   
-    - name: Check Disk 
-      run: sudo df -lh
- 
-    - name: Get Cpus information
-      run: sudo cat /proc/cpuinfo
-    
-    - name: Check Internet Status
-      run: sudo ip addr
-      
-    - name: Mtr information
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo apt install mtr
-        sudo mtr www.google.com
+        echo "Deleting files, please wait ..."
+        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d/*
+        sudo swapoff /swapfile
+        sudo rm -f /swapfile
+        #docker rmi `docker images -q`
+        #sudo -E apt-get -q purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        curl -fsSL https://raw.githubusercontent.com/P3TERX/dotfiles/master/.bashrc >> ~/.bashrc
+        sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+       
+    - name: SSH connection to Actions
+      uses: P3TERX/debugger-action@master
