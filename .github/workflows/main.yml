@@ -1,4 +1,4 @@
-name: Build ROM
+name: Get Kernel Update
 
 on: 
   watch:
@@ -6,6 +6,11 @@ on:
   push:
     branches: 
       - master
+
+env:
+  KERNEL_VERSION: 4.14
+  CAF_TAG: LA.UM.8.2.1.r1-05000-sdm660.0
+  Upload_Link: https://github.com/tanz3/caf-4.14.git
 
 jobs:
   build:
@@ -16,13 +21,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
 
-    - name: Initialization environment
-      env:
-        DEBIAN_FRONTEND: noninteractive
+    - name: Downloading CAF Update
       run: |
-        echo "Deleting files, please wait ..."
-        curl -fsSL https://raw.githubusercontent.com/P3TERX/dotfiles/master/.bashrc >> ~/.bashrc
-        sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-       
-    - name: SSH connection to Actions
-      uses: P3TERX/debugger-action@master
+        git clone https://source.codeaurora.org/quic/la/kernel/msm-$KERNEL_VERSION -b $CAF_TAG
+        
+    - name: Uploading CAF Update
+      run: |
+        git push --mirror $Upload_Link 
